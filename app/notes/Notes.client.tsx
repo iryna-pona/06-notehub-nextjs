@@ -11,6 +11,7 @@ import Modal from '@/components/Modal/Modal';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
 import ErrorMessage from '@/app/notes/error';
+import Loading from "@/app/loading";
 import css from './NotesPage.module.css';
 
 interface Props {
@@ -39,7 +40,7 @@ export default function NotesClient({ initialPage, initialSearch, perPage }: Pro
     sortBy: 'created',
   };
 
-  const { data, isError, error } = useQuery<FetchNotesResponse, Error>({
+  const { data, isLoading, isError, error } = useQuery<FetchNotesResponse, Error>({
     queryKey: ['notes', params.search, params.page],
     queryFn: () => fetchNotes(params),
     placeholderData: { notes: [], totalPages: 1 } as FetchNotesResponse,
@@ -47,6 +48,9 @@ export default function NotesClient({ initialPage, initialSearch, perPage }: Pro
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  if (isLoading) return <Loading />;
+  if (isError && error) return <ErrorMessage error={error} />;
 
   return (
     <div className={css.app}>
@@ -60,13 +64,7 @@ export default function NotesClient({ initialPage, initialSearch, perPage }: Pro
         </button>
       </header>
 
-      {isError && <ErrorMessage error={error} />}
-
-      {!isError && data?.notes && (
-        <>
-          <NoteList notes={data.notes} />
-        </>
-      )}
+      <NoteList notes={data?.notes ?? []} />
 
       {isModalOpen && (
         <Modal onClose={handleCloseModal}>
