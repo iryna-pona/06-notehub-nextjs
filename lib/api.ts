@@ -1,11 +1,11 @@
-import axios from "axios";
-import type { Note, NoteTag } from "../types/note";
+import axios from 'axios';
+import type { Note, NoteTag } from '../types/note';
 
-const BASE_URL = "https://notehub-public.goit.study/api";
+const BASE_URL = 'https://notehub-public.goit.study/api';
 const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 
 if (!token) {
-  throw new Error("Invalid token: missing NEXT_PUBLIC_NOTEHUB_TOKEN");
+  throw new Error('Invalid token: missing NEXT_PUBLIC_NOTEHUB_TOKEN');
 }
 
 export interface FetchNotesParams {
@@ -13,7 +13,7 @@ export interface FetchNotesParams {
   tag?: string;
   page?: number;
   perPage?: number;
-  sortBy?: "created" | "updated";
+  sortBy?: 'created' | 'updated';
 }
 
 export interface FetchNotesResponse {
@@ -27,10 +27,7 @@ export interface CreateNoteParams {
   tag: NoteTag;
 }
 
-
-export async function fetchNotes(
-  params: FetchNotesParams
-): Promise<FetchNotesResponse> {
+export async function fetchNotes(params: FetchNotesParams): Promise<FetchNotesResponse> {
   const response = await axios.get<FetchNotesResponse>(`${BASE_URL}/notes`, {
     params,
     headers: {
@@ -40,7 +37,6 @@ export async function fetchNotes(
 
   return response.data;
 }
-
 
 export async function fetchNoteById(id: string): Promise<Note> {
   const response = await axios.get<Note>(`${BASE_URL}/notes/${id}`, {
@@ -52,7 +48,6 @@ export async function fetchNoteById(id: string): Promise<Note> {
   return response.data;
 }
 
-
 export async function createNote(data: CreateNoteParams): Promise<Note> {
   const response = await axios.post<Note>(`${BASE_URL}/notes`, data, {
     headers: {
@@ -62,7 +57,6 @@ export async function createNote(data: CreateNoteParams): Promise<Note> {
 
   return response.data;
 }
-
 
 export async function deleteNote(id: string): Promise<Note> {
   const response = await axios.delete<Note>(`${BASE_URL}/notes/${id}`, {
